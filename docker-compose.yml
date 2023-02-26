@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  database:
+    image: postgres
+    networks:
+    - gateway-net
+    restart: always
+    volumes:
+    - db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: passwd
+
+  adminer:
+    image: adminer
+    networks:
+    - gateway-net
+    restart: always
+    ports:
+      - 8080:8080
+
+  api:
+    build: .
+    depends_on:
+      - database
+    networks:
+    - gateway-net
+    environment:
+    - HTTP_PORT=3000
+    - POSTGRES_HOSTNAME=database:5432
+    - POSTGRES_USERNAME=postgres
+    - POSTGRES_PASSWORD=passwd
+    - POSTGRES_DATABASE=postgres
+
+    ports:
+      - 3000:3000
+
+
+networks:
+  gateway-net:
+    driver: bridge
+    
+volumes:
+  db-data:
+    driver: local
