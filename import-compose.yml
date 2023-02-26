@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  importer:
+    build:
+      context: .
+      dockerfile: import.Dockerfile
+    environment:
+    - POSTGRES_HOSTNAME=database:5432
+    - POSTGRES_USERNAME=postgres
+    - POSTGRES_PASSWORD=passwd
+    - POSTGRES_DATABASE=postgres
+    networks:
+    - dockerized_api_gateway-net
+  
+networks:
+  dockerized_api_gateway-net:
+    external: true
